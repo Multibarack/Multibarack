@@ -41,11 +41,13 @@ spec:
               drop:
                 - ALL
             readOnlyRootFilesystem: true
-          env:
-            - name: APP_ENV
-              value: {{ .Values.config.appEnv | quote }}
-            - name: LOG_LEVEL
-              value: {{ .Values.config.logLevel | quote }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "platform-api.fullname" . }}
+            {{- if .Values.secret.enabled }}
+            - secretRef:
+                name: {{ include "platform-api.fullname" . }}-secret
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           readinessProbe:

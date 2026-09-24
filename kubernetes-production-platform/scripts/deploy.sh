@@ -19,6 +19,9 @@ kubectl rollout status deployment/ingress-nginx-controller \
   -n "$INGRESS_NAMESPACE" \
   --timeout=180s
 
+echo "==> Installing Metrics Server"
+./scripts/install-metrics-server.sh
+
 echo "==> Deploying platform"
 
 kubectl apply -f namespaces/platform.yaml

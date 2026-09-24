@@ -42,3 +42,10 @@ security:
 config:
   appEnv: production
   logLevel: info
+
+# Demo-only values used to demonstrate Kubernetes Secret injection.
+# Never commit real credentials or sensitive values to values.yaml.
+secret:
+  enabled: true
+  appName: platform-api
+  appMode: demo
