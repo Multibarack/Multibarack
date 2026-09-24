@@ -15,6 +15,7 @@ jobs:
   validate:
     name: Validate Kubernetes Platform
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: kubernetes-production-platform
@@ -69,22 +70,26 @@ jobs:
         run: |
           python3 - <<'PY'
           import pathlib
-          import sys
+          import yaml
 
-          try:
-              import yaml
-          except ImportError:
-              print("PyYAML is not available")
-              sys.exit(1)
+          root = pathlib.Path(".")
 
-          files = list(pathlib.Path(".").rglob("*.yaml")) + \
-                  list(pathlib.Path(".").rglob("*.yml"))
+          files = [
+              path
+              for path in (
+                  list(root.rglob("*.yaml")) +
+                  list(root.rglob("*.yml"))
+              )
+              if "helm/templates" not in path.as_posix()
+          ]
 
           for path in files:
               with path.open() as f:
                   list(yaml.safe_load_all(f))
 
               print(f"OK: {path}")
+
+          print(f"Validated {len(files)} YAML files")
           PY
 
   security:
@@ -97,7 +102,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Trivy filesystem scan
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@0.36.0
         with:
           scan-type: fs
           scan-ref: kubernetes-production-platform
