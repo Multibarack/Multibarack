@@ -11,10 +11,20 @@ spec:
   policyTypes:
     - Ingress
   ingress:
+    # Allow traffic from workloads in the platform namespace
     - from:
         - namespaceSelector:
             matchLabels:
               name: platform
+      ports:
+        - protocol: TCP
+          port: 8080
+
+    # Allow traffic from the NGINX Ingress Controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
       ports:
         - protocol: TCP
           port: 8080
