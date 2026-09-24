@@ -15,6 +15,9 @@ jobs:
   validate:
     name: Validate Kubernetes Platform
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: kubernetes-production-platform
 
     steps:
       - name: Checkout repository
@@ -52,7 +55,7 @@ jobs:
           bash -n scripts/install-metrics-server.sh
           bash -n scripts/test.sh
 
-                - name: Set up Python
+      - name: Set up Python
         uses: actions/setup-python@v7
         with:
           python-version: '3.13'
@@ -97,7 +100,7 @@ jobs:
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: fs
-          scan-ref: .
+          scan-ref: kubernetes-production-platform
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: 1
